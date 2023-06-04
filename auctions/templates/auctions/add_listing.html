@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Add Listing</h2>
+
+    <form action="{% url 'add_listing' %}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            {{ field }} 
+        </div>
+        {% endfor %}
+    </form>
+
+    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+
+{% endblock %}

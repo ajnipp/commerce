@@ -3,8 +3,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django import forms 
 
-from .models import User
+from .models import User, Listing
 
 
 def index(request):
@@ -61,3 +62,20 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+class ListingForm(forms.ModelForm):
+    class Meta:
+        model = Listing
+        fields = ['title', 'description', 'price', 'image_url', 'category']
+def add_listing(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    user = User.objects.get(username=request.user.username)
+    if request.method == 'POST':
+        form = ListingForm(request.POST)
+        if form.is_valid:
+            pass
+    listing = Listing(owner=user)
+    return render(request, 'auctions/add_listing.html', {
+        'form': ListingForm(instance=listing) 
+    })
