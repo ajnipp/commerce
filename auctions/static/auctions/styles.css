@@ -1,3 +1,36 @@
 body {
     padding: 10px;
 }
+
+.hstack {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.listing-container {
+    border: solid;
+    border-width: 1px;
+    border-color: var(--bs-secondary);
+    margin-top: 5px;
+    padding: 10px
+}
+
+.listing-image-container {
+    width: 500px;
+    height: 300px;
+    position: relative;
+}
+
+.no-image {
+    margin: auto;
+}
+
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
