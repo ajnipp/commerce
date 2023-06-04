@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms 
+from django.utils.translation import gettext_lazy as _
 
 from .models import User, Listing
 
@@ -67,15 +68,25 @@ class ListingForm(forms.ModelForm):
     class Meta:
         model = Listing
         fields = ['title', 'description', 'price', 'image_url', 'category']
+        widgets = {
+            'description': forms.Textarea()
+        }
+        labels = {
+            'image_url': _('Image URL') 
+        }
 def add_listing(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
-    user = User.objects.get(username=request.user.username)
+    user = request.user
     if request.method == 'POST':
-        form = ListingForm(request.POST)
+        listing = Listing(owner=user)
+        form = ListingForm(request.POST, instance=listing)
         if form.is_valid:
-            pass
-    listing = Listing(owner=user)
+            form.save() 
+        else:
+            return render(request, 'auctions/add_listing.html', {
+                'form': form
+            })
     return render(request, 'auctions/add_listing.html', {
-        'form': ListingForm(instance=listing) 
+        'form': ListingForm() 
     })
