@@ -32,6 +32,9 @@ body {
     margin: auto;
 }
 
+.no-image-icon {
+    max-height: 300px;
+}
 .center {
     margin: 0;
     position: absolute;

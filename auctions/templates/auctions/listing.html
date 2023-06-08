@@ -1,0 +1,25 @@
+{% extends 'auctions/layout.html' %}
+
+{% block title %}
+{{ listing.title }}
+{% endblock %}
+
+{% block body %}
+<h2>Listing: {{ listing.title }}</h2>
+<div>
+    {% if listing.image_url %}
+    <img src="{{ listing.image_url }}" alt="Picture of {{ listing.title }}"/>
+    {% else %}
+    <img class="no-image-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png">
+    {% endif %}
+</div>
+<p>{{ listing.description|default:"No description provided." }}</p>
+<h4>
+    ${{ listing.price }}
+</h4>
+<h4>Details</h4>
+<ul>
+    <li>Listed by: {{ listing.owner.username }}</li>
+    <li>Category: {{ listing.category|default:"No category provided."}}</li>
+</ul>
+{% endblock %}

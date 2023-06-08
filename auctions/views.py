@@ -93,3 +93,12 @@ def add_listing(request):
     return render(request, 'auctions/add_listing.html', {
         'form': ListingForm() 
     })
+def listing(request, listing_id):
+    user = request.user
+    listing = Listing.objects.get(pk=listing_id)
+    if listing is None:
+        pass
+    return render(request, 'auctions/listing.html', {
+        'user': user,
+        'listing': listing
+    })
