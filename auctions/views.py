@@ -108,6 +108,14 @@ def listing(request, listing_id):
 def categories(request):
     pass
 
+def watchlist(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    user = request.user
+    return render(request, 'auctions/watchlist.html',{
+        'user': user,
+        'watchlist': user.watchlist.all()
+    })
 def watchlist_add(request, listing_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
