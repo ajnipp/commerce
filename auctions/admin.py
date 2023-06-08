@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, Listing
+from .models import User, Listing, Bid
 # Register your models here.
 
-admin.site.register([User, Listing])
+admin.site.register([User, Listing, Bid])

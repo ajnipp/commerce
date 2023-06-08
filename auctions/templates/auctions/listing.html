@@ -24,6 +24,9 @@ Listing | {{ listing.title }}
 <h4>
     ${{ listing.price }}
 </h4>
+<div>
+    <p>{{ bid_count }} bids so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the highest bidder. {% endif %}</p>
+</div>
 <h4>Details</h4>
 <ul>
     <li>Listed by: {{ listing.owner.username }}</li>

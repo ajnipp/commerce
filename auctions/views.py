@@ -99,10 +99,19 @@ def listing(request, listing_id):
     if listing is None:
         pass
     is_watching = listing in user.watchlist.all()
+    bids = listing.bids.all()
+    bid_count = bids.count()
+    highest_bid = bids.order_by('-amount').first() 
+    if highest_bid is None:
+        is_highest_bidder = False
+    else:
+        is_highest_bidder = highest_bid.bidder == user
     return render(request, 'auctions/listing.html', {
         'user': user,
         'listing': listing,
-        'is_watching': is_watching
+        'is_watching': is_watching,
+        'bid_count': bid_count,
+        'is_highest_bidder': is_highest_bidder,
     })
 
 def categories(request):
