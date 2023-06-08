@@ -22,10 +22,15 @@ Listing | {{ listing.title }}
 </div>
 <p>{{ listing.description|default:"No description provided." }}</p>
 <h4>
-    ${{ listing.price }}
+    ${{ listing.price|stringformat:".2f" }}
 </h4>
 <div>
     <p>{{ bid_count }} bids so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the highest bidder. {% endif %}</p>
+    <form action="{% url 'listing' listing.id %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
 </div>
 <h4>Details</h4>
 <ul>
