@@ -7,11 +7,9 @@
     <div class="hstack">
         <div class="listing-image-container">
         {% if listing.image_url%}
-            <img class="listing-image" src="{{ listing.image_url }}">
+            <img class="listing-image center" src="{{ listing.image_url }}">
         {% else %}
-            <div class="no-image center">
-                No image
-            </div>
+            <img class="no-image-icon center" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png">
         {% endif %}
         </div>
         <div class="vstack">
@@ -20,6 +18,7 @@
             {% if listing.description %}
             <p>{{ listing.description }}</p>
             {% endif %}
+            <a href="{% url 'listing' listing.id %}">View listing</a>
         </div>
     </div>
 </div>

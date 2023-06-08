@@ -102,3 +102,6 @@ def listing(request, listing_id):
         'user': user,
         'listing': listing
     })
+
+def categories(request):
+    pass
