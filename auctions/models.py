@@ -27,3 +27,4 @@ class Listing(models.Model):
     category = models.CharField(max_length=3, choices=CATEGORIES, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True, auto_created=True)
+    watchers = models.ManyToManyField(User, related_name='watchlist', blank=True, default=None, auto_created=True)
