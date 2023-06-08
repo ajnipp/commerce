@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms 
@@ -98,10 +98,32 @@ def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     if listing is None:
         pass
+    is_watching = listing in user.watchlist.all()
     return render(request, 'auctions/listing.html', {
         'user': user,
-        'listing': listing
+        'listing': listing,
+        'is_watching': is_watching
     })
 
 def categories(request):
     pass
+
+def watchlist_add(request, listing_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    user = request.user
+    listing = Listing.objects.get(pk=listing_id)
+    if listing is None:
+        return Http404(f"Coudn't find listing with id of {listing_id}")
+    user.watchlist.add(listing) 
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+
+def watchlist_remove(request, listing_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    user = request.user
+    listing = Listing.objects.get(pk=listing_id)
+    if listing is None:
+        return Http404(f"Coudn't find listing with id of {listing_id}")
+    user.watchlist.remove(listing) 
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))

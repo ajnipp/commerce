@@ -7,6 +7,13 @@ Listing | {{ listing.title }}
 {% block body %}
 <h2>Listing: {{ listing.title }}</h2>
 <div>
+    {% if is_watching %}
+    <a href="{% url 'watchlist_remove' listing.id %}">Remove from watchlist</a>
+    {% else %}
+    <a href="{% url 'watchlist_add' listing.id %}">Add to watchlist</a>
+    {% endif %}
+</div>
+<div>
     {% if listing.image_url %}
     <img src="{{ listing.image_url }}" alt="Picture of {{ listing.title }}"/>
     {% else %}
