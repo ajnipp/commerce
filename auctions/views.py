@@ -111,7 +111,10 @@ def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     if listing is None:
         return Http404('Listing not found!') 
-    is_watching = listing in user.watchlist.all()
+    if user.is_authenticated:
+        is_watching = listing in user.watchlist.all()
+    else:
+        is_watching = False
     bids = listing.bids.all()
     bid_count = bids.count()
     highest_bid = bids.order_by('-amount').first() 
@@ -120,6 +123,8 @@ def listing(request, listing_id):
     else:
         is_highest_bidder = highest_bid.bidder == user
     if request.method == 'POST':
+        if not user.is_authenticated:
+            return HttpResponseRedirect(reverse('login'))
         if user == listing.owner:
             return HttpResponse('Cannot post bid as the owner!') 
         bid = Bid(listing=listing, bidder=user)
