@@ -125,6 +125,7 @@ def listing(request, listing_id):
         is_highest_bidder = False
     else:
         is_highest_bidder = highest_bid.bidder == user
+    category = listing.get_category_display()
     if request.method == 'POST':
         if not user.is_authenticated:
             return HttpResponseRedirect(reverse('login'))
@@ -143,7 +144,8 @@ def listing(request, listing_id):
                 'is_watching': is_watching,
                 'bid_count': bid_count,
                 'is_highest_bidder': is_highest_bidder,
-                'form': form
+                'form': form,
+                'category': category
             })
     return render(request, 'auctions/listing.html', {
         'user': user,
@@ -151,12 +153,26 @@ def listing(request, listing_id):
         'is_watching': is_watching,
         'bid_count': bid_count,
         'is_highest_bidder': is_highest_bidder,
-        'form': BidForm()
+        'form': BidForm(),
+        'category': category
     })
 
 def categories(request):
-    pass
+    categories = [entry[1] for entry in Listing.CATEGORIES] 
+    return render(request, 'auctions/categories.html', {
+        'categories': categories
+    })
 
+def category(request, category):
+    categories = [entry[1] for entry in Listing.CATEGORIES] 
+    if category not in categories:
+        return Http404(f"Couldn't find category { category }")
+    category_code = [entry[0] for entry in Listing.CATEGORIES if entry[1] == category][0]   
+    listings = Listing.objects.filter(category=category_code)
+    return render(request, 'auctions/category.html', {
+        'category': category,
+        'listings': listings,
+    })
 def watchlist(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))

@@ -25,7 +25,7 @@ Listing | {{ listing.title }}
     ${{ listing.price|stringformat:".2f" }}
 </h4>
 <div>
-    <p>{{ bid_count }} bids so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the highest bidder. {% endif %}</p>
+    <p>{{ bid_count }} bid(s) so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the highest bidder. {% endif %}</p>
     <form class="bid-form" action="{% url 'listing' listing.id %}" method="post">
         {% csrf_token %}
         {% for field in form %}
@@ -37,6 +37,6 @@ Listing | {{ listing.title }}
 <h4>Details</h4>
 <ul>
     <li>Listed by: {{ listing.owner.username }}</li>
-    <li>Category: {{ listing.category|default:"No category provided."}}</li>
+    <li>Category: {{ category|default:"No category provided."}}</li>
 </ul>
 {% endblock %}
