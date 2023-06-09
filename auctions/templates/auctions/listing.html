@@ -26,16 +26,34 @@ Listing | {{ listing.title }}
     ${{ listing.price|stringformat:".2f" }}
 </h4>
 <div>
+    {% if listing.is_active %}
     <p>{{ bid_count }} bid(s) so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the
         highest bidder. {% endif %}</p>
+    {% if is_owner %}
+        <form class="close-auction-form" action="{% url 'listing' listing.id %}", method="post">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="close_auction">
+            <input class="btn btn-primary" type="submit" value="Close auction">
+        </form>
+    {% else %}
+
     <form class="bid-form" action="{% url 'listing' listing.id %}" method="post">
         {% csrf_token %}
         {% for field in bid_form %}
+        {{ field.errors }}
         {{ field }}
         {% endfor %}
         <input type="hidden" name="type" value="bid">
         <input class="btn btn-primary" type="submit" value="Place bid">
     </form>
+    {% endif %}
+    {% else %}
+    {% if is_winner %}
+        <p>Congratulations, you've won this auction!</p>
+    {% else %}
+        <p>This auction is now closed. The winner is <strong>{{ listing.winner|default:listing.owner }}.</strong></p>
+    {% endif %}
+    {% endif %}
 </div>
 <h4>Details</h4>
 <ul>

@@ -115,6 +115,8 @@ class BidForm(forms.ModelForm):
         if amount <= self.instance.listing.price:
             print("value too small")
             self.add_error('amount', "Bid must be higher than the current price!")
+class CloseAuctionForm(forms.Form):
+    pass
 
 def listing(request, listing_id):
     user = request.user
@@ -123,8 +125,10 @@ def listing(request, listing_id):
         return Http404('Listing not found!') 
     if user.is_authenticated:
         is_watching = listing in user.watchlist.all()
+        is_owner = listing.owner == user
     else:
         is_watching = False
+        is_owner = False
     bids = listing.bids.all()
     bid_count = bids.count()
     highest_bid = bids.order_by('-amount').first() 
@@ -134,10 +138,11 @@ def listing(request, listing_id):
         is_highest_bidder = highest_bid.bidder == user
     category = listing.get_category_display()
     comments = listing.comments.order_by('timestamp')
+    is_winner = user == listing.winner
     if request.method == 'POST':
         if not user.is_authenticated:
             return HttpResponseRedirect(reverse('login'))
-        if request.POST['type'] == 'bid':
+        if request.POST['type'] == 'bid' and listing.is_active:
             if user == listing.owner:
                 return HttpResponse('Cannot post bid as the owner!') 
             bid = Bid(listing=listing, bidder=user)
@@ -151,6 +156,9 @@ def listing(request, listing_id):
                     'user': user,
                     'listing': listing,
                     'is_watching': is_watching,
+                    'is_owner': is_owner,
+                    'is_winner': is_winner,
+                    'close_auction_form': CloseAuctionForm(),
                     'bid_count': bid_count,
                     'is_highest_bidder': is_highest_bidder,
                     'bid_form': bid_form,
@@ -168,6 +176,9 @@ def listing(request, listing_id):
                     'user': user,
                     'listing': listing,
                     'is_watching': is_watching,
+                    'is_owner': is_owner,
+                    'is_winner': is_winner,
+                    'close_auction_form': CloseAuctionForm(),
                     'bid_count': bid_count,
                     'is_highest_bidder': is_highest_bidder,
                     'bid_form': BidForm(),
@@ -175,12 +186,21 @@ def listing(request, listing_id):
                     'category': category,
                     'comments': comments
                 })
+        elif request.POST['type'] == 'close_auction':
+            close = CloseAuctionForm(request.POST)
+            if close.is_valid():
+                listing.is_active = False
+                listing.winner = highest_bid.bidder
+                listing.save(update_fields=['is_active', 'winner'])
     return render(request, 'auctions/listing.html', {
         'user': user,
         'listing': listing,
         'is_watching': is_watching,
         'bid_count': bid_count,
         'is_highest_bidder': is_highest_bidder,
+        'is_winner': is_winner,
+        'is_owner': is_owner,
+        'close_auction_form': CloseAuctionForm(),
         'bid_form': BidForm(),
         'comment_form': CommentForm(),
         'category': category,
