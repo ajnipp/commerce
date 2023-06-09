@@ -13,9 +13,9 @@ Listing | {{ listing.title }}
     <a href="{% url 'watchlist_add' listing.id %}">Add to watchlist</a>
     {% endif %}
 </div>
-<div>
+<div class="listing-page-image-container">
     {% if listing.image_url %}
-    <img src="{{ listing.image_url }}" alt="Picture of {{ listing.title }}" />
+    <img class="listing-image" src="{{ listing.image_url }}" alt="Picture of {{ listing.title }}" />
     {% else %}
     <img class="no-image-icon"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png">

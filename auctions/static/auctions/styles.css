@@ -28,6 +28,11 @@ body {
     object-fit: contain;
 }
 
+.listing-page-image-container {
+    position: relative;
+    height: 500px;
+}
+
 .no-image {
     margin: auto;
 }
