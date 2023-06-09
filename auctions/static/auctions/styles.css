@@ -35,6 +35,7 @@ body {
 .no-image-icon {
     max-height: 300px;
 }
+
 .center {
     margin: 0;
     position: absolute;
@@ -42,4 +43,12 @@ body {
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-  }
+}
+
+.bid-form input {
+    margin-bottom: 10px;
+}
+.bid-entry-box {
+    display: block;
+    min-width: 40%;
+}

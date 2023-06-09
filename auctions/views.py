@@ -98,6 +98,9 @@ class BidForm(forms.ModelForm):
     class Meta:
         model = Bid 
         fields = ['amount']
+        widgets = {
+            'amount':   forms.NumberInput({'placeholder': 'Enter bid', 'class': 'bid-entry-box'})
+        }
     def clean(self):
         cleaned_data = super().clean()
         amount = cleaned_data['amount']

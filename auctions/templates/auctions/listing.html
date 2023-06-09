@@ -26,10 +26,12 @@ Listing | {{ listing.title }}
 </h4>
 <div>
     <p>{{ bid_count }} bids so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the highest bidder. {% endif %}</p>
-    <form action="{% url 'listing' listing.id %}" method="post">
+    <form class="bid-form" action="{% url 'listing' listing.id %}" method="post">
         {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit">
+        {% for field in form %}
+            {{ field }}
+        {% endfor %}
+        <input class="btn btn-primary" type="submit" value="Place bid">
     </form>
 </div>
 <h4>Details</h4>
