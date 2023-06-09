@@ -24,3 +24,5 @@ Each listing page contains additional details about the listing (e.g., category)
 <p align="center">
   <img src="images/comments-section.png" width="600" title="hover text">
 </p>
+
+This project was completed as part of Harvard's CS50W course.
