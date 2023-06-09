@@ -1,5 +1,5 @@
 # Commerce
-Web application created as part of Harvard's CS50W course. It leverages several features of Django including Authentication, Models, Templates, and Forms.
+Web application that allows users to buy and sell items via online auction. It leverages several features of Django including Authentication, Models, Templates, and Forms.
 
 ## Use
 After logging in, users can add a listing to the auctions page.
