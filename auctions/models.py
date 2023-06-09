@@ -35,3 +35,10 @@ class Bid(models.Model):
     amount = models.DecimalField(decimal_places=2, max_digits=10, validators=[validate_price])
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='bids')
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bids')
+
+class Comment(models.Model):
+    id = models.AutoField(primary_key=True)
+    content = models.CharField(max_length=500)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    timestamp = models.DateTimeField(auto_now_add=True) # Holds the timestamp for the listing's creation

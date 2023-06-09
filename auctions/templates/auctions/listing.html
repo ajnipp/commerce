@@ -15,9 +15,10 @@ Listing | {{ listing.title }}
 </div>
 <div>
     {% if listing.image_url %}
-    <img src="{{ listing.image_url }}" alt="Picture of {{ listing.title }}"/>
+    <img src="{{ listing.image_url }}" alt="Picture of {{ listing.title }}" />
     {% else %}
-    <img class="no-image-icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png">
+    <img class="no-image-icon"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png">
     {% endif %}
 </div>
 <p>{{ listing.description|default:"No description provided." }}</p>
@@ -25,12 +26,14 @@ Listing | {{ listing.title }}
     ${{ listing.price|stringformat:".2f" }}
 </h4>
 <div>
-    <p>{{ bid_count }} bid(s) so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the highest bidder. {% endif %}</p>
+    <p>{{ bid_count }} bid(s) so far. {% if is_highest_bidder %} You are the highest bidder {% else %} You are not the
+        highest bidder. {% endif %}</p>
     <form class="bid-form" action="{% url 'listing' listing.id %}" method="post">
         {% csrf_token %}
-        {% for field in form %}
-            {{ field }}
+        {% for field in bid_form %}
+        {{ field }}
         {% endfor %}
+        <input type="hidden" name="type" value="bid">
         <input class="btn btn-primary" type="submit" value="Place bid">
     </form>
 </div>
@@ -39,4 +42,26 @@ Listing | {{ listing.title }}
     <li>Listed by: {{ listing.owner.username }}</li>
     <li>Category: {{ category|default:"No category provided."}}</li>
 </ul>
+<h4>Comments</h4>
+<div id="comments-section">
+    {% for comment in comments %}
+    <div class="comment-block">
+        <div class="comment-header">
+            <strong>{{ comment.author }}</strong>
+            <div class="comment-timestamp"> {{ comment.timestamp }}</div>
+        </div>
+        <p>{{ comment.content }}</p>
+        <hr>
+    </div>
+    {% endfor %}
+    <form class="comment-form" action="{% url 'listing' listing.id %}" method="post">
+        {% csrf_token %}
+        {% for field in comment_form%}
+        {{ field }}
+        {% endfor %}
+        <input type="hidden" name="type" value="comment">
+        <br>
+        <input class="btn btn-primary" type="submit" value="Submit">
+    </form>
+</div>
 {% endblock %}

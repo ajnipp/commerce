@@ -6,7 +6,7 @@ from django.urls import reverse
 from django import forms 
 from django.utils.translation import gettext_lazy as _
 
-from .models import User, Listing, Bid
+from .models import User, Listing, Bid, Comment
 
 
 def index(request):
@@ -94,6 +94,13 @@ def add_listing(request):
         'form': ListingForm() 
     })
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment 
+        fields = ['content']
+        widgets = {
+            'content':   forms.Textarea({'placeholder': 'Enter comment', 'class': 'comment-entry-box'})
+        }
 class BidForm(forms.ModelForm):
     class Meta:
         model = Bid 
@@ -126,35 +133,58 @@ def listing(request, listing_id):
     else:
         is_highest_bidder = highest_bid.bidder == user
     category = listing.get_category_display()
+    comments = listing.comments.order_by('timestamp')
     if request.method == 'POST':
         if not user.is_authenticated:
             return HttpResponseRedirect(reverse('login'))
-        if user == listing.owner:
-            return HttpResponse('Cannot post bid as the owner!') 
-        bid = Bid(listing=listing, bidder=user)
-        form = BidForm(request.POST, instance=bid) 
-        if form.is_valid():
-            form.save()
-            listing.price = form.cleaned_data['amount']
-            listing.save(update_fields=['price'])
-        else:
-            return render(request, 'auctions/listing.html', {
-                'user': user,
-                'listing': listing,
-                'is_watching': is_watching,
-                'bid_count': bid_count,
-                'is_highest_bidder': is_highest_bidder,
-                'form': form,
-                'category': category
-            })
+        if request.POST['type'] == 'bid':
+            if user == listing.owner:
+                return HttpResponse('Cannot post bid as the owner!') 
+            bid = Bid(listing=listing, bidder=user)
+            bid_form = BidForm(request.POST, instance=bid) 
+            if bid_form.is_valid():
+                bid_form.save()
+                listing.price = bid_form.cleaned_data['amount']
+                listing.save(update_fields=['price'])
+            else:
+                return render(request, 'auctions/listing.html', {
+                    'user': user,
+                    'listing': listing,
+                    'is_watching': is_watching,
+                    'bid_count': bid_count,
+                    'is_highest_bidder': is_highest_bidder,
+                    'bid_form': bid_form,
+                    'comment_form': CommentForm(), 
+                    'category': category,
+                    'comments': comments
+                })
+        elif request.POST['type'] == 'comment':
+            comment = Comment(author=user, listing=listing)
+            comment_form = CommentForm(request.POST, instance=comment)
+            if comment_form.is_valid():
+                comment_form.save()
+            else:
+                return render(request, 'auctions/listing.html', {
+                    'user': user,
+                    'listing': listing,
+                    'is_watching': is_watching,
+                    'bid_count': bid_count,
+                    'is_highest_bidder': is_highest_bidder,
+                    'bid_form': BidForm(),
+                    'comment_form': comment_form, 
+                    'category': category,
+                    'comments': comments
+                })
     return render(request, 'auctions/listing.html', {
         'user': user,
         'listing': listing,
         'is_watching': is_watching,
         'bid_count': bid_count,
         'is_highest_bidder': is_highest_bidder,
-        'form': BidForm(),
-        'category': category
+        'bid_form': BidForm(),
+        'comment_form': CommentForm(),
+        'category': category,
+        'comments': comments
     })
 
 def categories(request):
